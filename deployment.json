@@ -5,16 +5,16 @@
   "explorerUrl": "https://explorer-studio-dev.genlayer.com",
   "contractAddress": "0x2f9AF7E3F799ed01173f4914f5bFcaDe713846C0",
   "deploymentTransaction": "0xc2539e8df04ba29120ddf079a72c328d6db8cccb4d8f78ae66f31eccd9d05bff",
-  "reviewedContractCommit": "8f74904f1159d522f6e240263bfca0429587f445",
+  "reviewedContractCommit": "ca1c371da82eb187998ff0d7c95f4edfb42d390d",
   "contractSourceSha256": "19f0c07389444d04702a90be32fb1e2cfdc1f3bc508970e80a88f8ab017ef476",
   "sourceMatch": true,
   "publicSite": "https://clause-mirror.pages.dev",
   "liveDemo": {
-    "dossierId": "clause-demo-mv1hkca2",
-    "createTransaction": "0x3739ca192f3b1b24ee57e10b6df36c6b704c138a33207e22cf8ed55bc019627e",
-    "assessmentTransaction": "0x10461346f32a2c850a5faed3ebb1915022589131d0ad918ac2ade20045340f78",
+    "dossierId": "clause-demo-mv2jm9p3",
+    "createTransaction": "0x4a1eed6e03c585be811c1e2137a9b929035ed6c4a31801a0119dd5aadacf6784",
+    "assessmentTransaction": "0xf1a240f31edb3f248fa352a787799f54991583c99acdb4119d85bb381e5f45ce",
     "finalState": "ASSESSED",
     "overall": "ALIGNED",
-    "fixtureCommit": "bc11301"
+    "fixtureCommit": "ca1c371da82eb187998ff0d7c95f4edfb42d390d"
   }
 }

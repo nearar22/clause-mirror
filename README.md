@@ -38,8 +38,8 @@ The frontend targets GenLayer Studio Next, chain `61997`. Copy `frontend/.env.ex
 - App: [clause-mirror.pages.dev](https://clause-mirror.pages.dev)
 - Contract: [`0x2f9A...46C0`](https://explorer-studio-dev.genlayer.com/address/0x2f9AF7E3F799ed01173f4914f5bFcaDe713846C0)
 - Deployment: [`0xc253...5bff`](https://explorer-studio-dev.genlayer.com/tx/0xc2539e8df04ba29120ddf079a72c328d6db8cccb4d8f78ae66f31eccd9d05bff)
-- Live dossier creation: [`0x3739...627e`](https://explorer-studio-dev.genlayer.com/tx/0x3739ca192f3b1b24ee57e10b6df36c6b704c138a33207e22cf8ed55bc019627e)
-- Validator assessment: [`0x1046...0f78`](https://explorer-studio-dev.genlayer.com/tx/0x10461346f32a2c850a5faed3ebb1915022589131d0ad918ac2ade20045340f78), finalized as `ASSESSED / ALIGNED`
+- Live dossier creation: [`0x4a1e...6784`](https://explorer-studio-dev.genlayer.com/tx/0x4a1eed6e03c585be811c1e2137a9b929035ed6c4a31801a0119dd5aadacf6784)
+- Validator assessment: [`0xf1a2...45ce`](https://explorer-studio-dev.genlayer.com/tx/0xf1a240f31edb3f248fa352a787799f54991583c99acdb4119d85bb381e5f45ce), finalized as `ASSESSED / ALIGNED`
 - Deployed and repository source SHA-256: `19f0c07389444d04702a90be32fb1e2cfdc1f3bc508970e80a88f8ab017ef476`
 
 The complete machine-readable record is in `deployment.json`.
