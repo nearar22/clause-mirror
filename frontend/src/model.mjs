@@ -1,5 +1,5 @@
 export const shortAddress = value => value ? `${value.slice(0, 6)}…${value.slice(-4)}` : "";
-export const tone = value => ({ ALIGNED: "mint", REVIEW: "amber", BLOCKED: "red", FINAL: "ink" }[value] || "paper");
+export const tone = value => ({ ALIGNED: "mint", AWAITING_SIGNOFF: "mint", RELEASE_AUTHORIZED: "mint", RELEASED: "mint", REVIEW: "amber", REVISION_REQUIRED: "amber", BLOCKED: "red", REJECTED: "red" }[value] || "paper");
 export const clean = value => value instanceof Map
   ? Object.fromEntries([...value].map(([key, item]) => [key, clean(item)]))
   : Array.isArray(value) ? value.map(clean)
@@ -8,8 +8,13 @@ export const clean = value => value instanceof Map
 export function nextActions(record, account) {
   if (!record) return [];
   const actor = (account || "").toLowerCase();
-  if (record.status === "READY") return ["assess"];
-  if (record.status === "ASSESSED" && actor === record.reviewer) return ["revision", "finalize"];
-  if (record.status === "REVISION_REQUESTED" && actor === record.owner) return ["replace"];
+  const owner = (record.owner || "").toLowerCase();
+  const reviewer = (record.reviewer || "").toLowerCase();
+  if (record.status === "EVIDENCE_PENDING") return ["freeze"];
+  if (record.status === "FROZEN") return ["assess"];
+  if (record.status === "REVISION_REQUIRED" && actor === reviewer) return ["revision"];
+  if (record.status === "REVISION_REQUIRED" && actor === owner) return ["replace"];
+  if (record.status === "AWAITING_SIGNOFF" && actor === reviewer) return ["finalize"];
+  if (record.status === "RELEASE_AUTHORIZED" && actor === owner) return ["release"];
   return [];
 }

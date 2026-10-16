@@ -14,13 +14,14 @@ const CHAIN_ID = Number(import.meta.env.VITE_GENLAYER_CHAIN_ID || "61997");
 const CHAIN = { ...studioDevnet, id: CHAIN_ID, name: "GenLayer Studio Next", rpcUrls: { default: { http: [RPC] } } };
 const EXPLORER = "https://explorer-studio-dev.genlayer.com";
 const DEMO = {
-  id: "supply-terms-demo", title: "Supply terms · EN / FR", status: "ASSESSED", revision: 0,
+  id: "supply-terms-demo", title: "Supply terms · EN / FR", status: "AWAITING_SIGNOFF", revision: 0,
   source_language: "English", target_language: "French", owner: "0x1111111111111111111111111111111111111111", reviewer: "0x2222222222222222222222222222222222222222",
   source: { host: "example.org", url: "https://example.org/agreement-en" }, target: { host: "example.org", url: "https://example.org/agreement-fr" },
-  assessment: { overall: "REVIEW", findings: [
+  assessment: { overall: "ALIGNED", coverage_complete: true, snapshot_digest: "2f09405d12977c8f8a10cc74190d9ff4e5ab48d93e8df89be62b718fb5814f74", findings: [
     { index: 0, classification: "ALIGNED", source_quote: "The Supplier must notify the Buyer within five business days.", target_quote: "Le Fournisseur doit notifier l’Acheteur dans les cinq jours ouvrables.", explanation: "The duty and deadline are preserved." },
-    { index: 1, classification: "AMBIGUOUS", source_quote: "Liability is capped at EUR 50,000 except in cases of fraud.", target_quote: "La responsabilité est plafonnée à 50 000 EUR.", explanation: "The fraud exception is not explicit in this target passage." }
-  ], document_receipts: [{ index: 0, role: "source", host: "example.org", sha256: "da8ec72a4f09b568f615d337c046e5538f6ed204e8751c67d8c07d3f491f74be" }, { index: 1, role: "target", host: "example.org", sha256: "6c1f11d3953b2a16b0ff69f87a27ffca9b569a86b08b74f512c3daceb2c13e44" }] }
+    { index: 1, classification: "ALIGNED", source_quote: "Liability is capped at EUR 50,000 except in cases of fraud.", target_quote: "La responsabilité est plafonnée à 50 000 EUR, sauf en cas de fraude.", explanation: "The amount and fraud exception are preserved." }
+  ], document_receipts: [{ index: 0, role: "source", host: "example.org", content_length: 841, sha256: "da8ec72a4f09b568f615d337c046e5538f6ed204e8751c67d8c07d3f491f74be" }, { index: 1, role: "target", host: "example.org", content_length: 917, sha256: "6c1f11d3953b2a16b0ff69f87a27ffca9b569a86b08b74f512c3daceb2c13e44" }] },
+  release_authorized: false, release_record: {}
 };
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
   const [reviewer, setReviewer] = useState("0x2222222222222222222222222222222222222222");
   const [replacement, setReplacement] = useState("https://example.org/agreement-fr-v2");
   const [note, setNote] = useState("Restore the omitted exception and publish a corrected translation for a new validator pass.");
+  const [artifactDigest, setArtifactDigest] = useState("");
   const [record, setRecord] = useState(DEMO);
   const [wallet, setWallet] = useState("");
   const [action, setAction] = useState(null);
@@ -66,11 +68,13 @@ function App() {
     if (!ADDRESS || !action) return null;
     const base = { kind: "write", address: ADDRESS };
     if (action === "create") return { ...base, method: "create_dossier", args: [id.trim(), title.trim(), purpose.trim(), sourceLanguage.trim(), targetLanguage.trim(), sourceUrl.trim(), targetUrl.trim(), reviewer.trim()] };
+    if (action === "freeze") return { ...base, method: "freeze_evidence", args: [id.trim()] };
     if (action === "assess") return { ...base, method: "assess", args: [id.trim()] };
     if (action === "revision") return { ...base, method: "request_revision", args: [id.trim(), note.trim()] };
     if (action === "replace") return { ...base, method: "replace_translation", args: [id.trim(), replacement.trim()] };
+    if (action === "release") return { ...base, method: "commit_release", args: [id.trim(), artifactDigest.trim()] };
     return { ...base, method: "finalize", args: [id.trim()] };
-  }, [action, id, title, purpose, sourceLanguage, targetLanguage, sourceUrl, targetUrl, reviewer, note, replacement]);
+  }, [action, id, title, purpose, sourceLanguage, targetLanguage, sourceUrl, targetUrl, reviewer, note, replacement, artifactDigest]);
   function write(next) { if (!ADDRESS) { setNotice("Deploy the contract and set VITE_CONTRACT_ADDRESS before sending writes."); return; } if (!kit) { setNotice("Connect a Studio Next wallet first."); return; } setAction(next); }
   function done(status) { if (status.phase === "finalized") { setAction(null); if (status.successful) void load(); else setNotice(`Transaction failed: ${status.executionResultName || status.statusName || "contract rejected the input"}.`); } }
   const findings = record?.assessment?.findings || [];
@@ -103,11 +107,15 @@ function App() {
           <div className="ruling-line"><span>{findings.length} MATERIAL FINDING{findings.length === 1 ? "" : "S"}</span><span>REVISION {record?.revision || 0} / 2</span></div>
           <div className="findings">{findings.length ? findings.map(item => <article key={item.index} className={item.classification.toLowerCase()}><div className="index">{String(item.index + 1).padStart(2, "0")}</div><div className="passages"><p><span>{record.source_language}</span>“{item.source_quote}”</p><div className="stitch"/><p><span>{record.target_language}</span>{item.target_quote ? `“${item.target_quote}”` : <i>No target passage found</i>}</p></div><div className="finding-note"><b>{item.classification}</b><p>{item.explanation}</p></div></article>) : <div className="empty"><Scale size={32}/><b>No comparison recorded</b><p>Assessing freezes both pages before validators compare their material meaning.</p></div>}</div>
           {record?.assessment?.document_receipts?.length > 0 && <div className="receipts">{record.assessment.document_receipts.map(item => <div key={item.index}><Fingerprint size={14}/><span>{item.role.toUpperCase()} · {item.host}</span><code>{item.sha256.slice(0, 12)}…{item.sha256.slice(-8)}</code></div>)}</div>}
+          {record?.assessment?.snapshot_digest && <div className="snapshot-proof"><LockKeyhole size={14}/><span>IMMUTABLE SNAPSHOT</span><code>{record.assessment.snapshot_digest}</code></div>}
+          {record?.release_record?.artifact_sha256 && <div className="snapshot-proof released"><ShieldCheck size={14}/><span>RELEASED ARTIFACT</span><code>{record.release_record.artifact_sha256}</code></div>}
           <div className="actions">
-            {record?.status === "READY" && <button onClick={() => write("assess")}><RefreshCw size={15}/> Run validator audit</button>}
+            {actions.includes("freeze") && <button onClick={() => write("freeze")}><LockKeyhole size={15}/> Freeze complete evidence</button>}
+            {actions.includes("assess") && <button onClick={() => write("assess")}><RefreshCw size={15}/> Run validator audit</button>}
             {actions.includes("revision") && <div className="inline-action"><input value={note} onChange={e => setNote(e.target.value)} /><button onClick={() => write("revision")}>Request revision</button></div>}
-            {record?.status === "REVISION_REQUESTED" && <div className="inline-action"><input value={replacement} onChange={e => setReplacement(e.target.value)} /><button onClick={() => write("replace")}>Publish replacement</button></div>}
+            {actions.includes("replace") && <div className="inline-action"><input value={replacement} onChange={e => setReplacement(e.target.value)} /><button onClick={() => write("replace")}>Publish replacement</button></div>}
             {actions.includes("finalize") && <button className="finalize" onClick={() => write("finalize")}><Check size={15}/> Reviewer final sign-off</button>}
+            {actions.includes("release") && <div className="inline-action"><input aria-label="Released artifact SHA-256" placeholder="64-character released artifact SHA-256" value={artifactDigest} onChange={e => setArtifactDigest(e.target.value)} /><button className="finalize" onClick={() => write("release")}><ShieldCheck size={15}/> Commit release</button></div>}
           </div>
         </section>
       </section>

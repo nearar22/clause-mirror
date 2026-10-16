@@ -7,10 +7,14 @@ test("cleans maps and bigint values returned by the SDK", () => {
 });
 
 test("derives role-bound actions from lifecycle state", () => {
-  const record = { status: "ASSESSED", owner: "0xaaa", reviewer: "0xbbb" };
-  assert.deepEqual(nextActions(record, "0xBbB"), ["revision", "finalize"]);
-  assert.deepEqual(nextActions(record, "0xaaa"), []);
-  assert.deepEqual(nextActions({ ...record, status: "REVISION_REQUESTED" }, "0xAaA"), ["replace"]);
+  const record = { status: "REVISION_REQUIRED", owner: "0xaaa", reviewer: "0xbbb" };
+  assert.deepEqual(nextActions({ ...record, status: "EVIDENCE_PENDING" }, ""), ["freeze"]);
+  assert.deepEqual(nextActions({ ...record, status: "FROZEN" }, ""), ["assess"]);
+  assert.deepEqual(nextActions(record, "0xBbB"), ["revision"]);
+  assert.deepEqual(nextActions(record, "0xAaA"), ["replace"]);
+  assert.deepEqual(nextActions({ ...record, status: "AWAITING_SIGNOFF" }, "0xBbB"), ["finalize"]);
+  assert.deepEqual(nextActions({ ...record, status: "RELEASE_AUTHORIZED" }, "0xAaA"), ["release"]);
+  assert.deepEqual(nextActions({ ...record, status: "RELEASED" }, "0xAaA"), []);
 });
 
 test("display helpers are stable", () => {

@@ -3,18 +3,21 @@
   "chainId": 61997,
   "rpcUrl": "https://studio-next.genlayer.com/api",
   "explorerUrl": "https://explorer-studio-dev.genlayer.com",
-  "contractAddress": "0x2f9AF7E3F799ed01173f4914f5bFcaDe713846C0",
-  "deploymentTransaction": "0xc2539e8df04ba29120ddf079a72c328d6db8cccb4d8f78ae66f31eccd9d05bff",
-  "reviewedContractCommit": "ca1c371da82eb187998ff0d7c95f4edfb42d390d",
-  "contractSourceSha256": "19f0c07389444d04702a90be32fb1e2cfdc1f3bc508970e80a88f8ab017ef476",
+  "contractAddress": "0x504a4Bb7E7b10D22A9FDf4027d18A2edCc187829",
+  "deploymentTransaction": "0x148850d20c491f5d7b6179614c3e6f8778bc055429b7b927bf7b756934001b89",
+  "contractSourceSha256": "1e18c8a523a527b6e5955647d942fca2ec8534eb895432c920ba7bc5a8294cb6",
   "sourceMatch": true,
   "publicSite": "https://clause-mirror.pages.dev",
   "liveDemo": {
-    "dossierId": "clause-demo-mv2jm9p3",
-    "createTransaction": "0x4a1eed6e03c585be811c1e2137a9b929035ed6c4a31801a0119dd5aadacf6784",
-    "assessmentTransaction": "0xf1a240f31edb3f248fa352a787799f54991583c99acdb4119d85bb381e5f45ce",
-    "finalState": "ASSESSED",
-    "overall": "ALIGNED",
-    "fixtureCommit": "ca1c371da82eb187998ff0d7c95f4edfb42d390d"
+    "dossierId": "clause-demo-mvaa2fs0",
+    "createTransaction": "0xc950fdc45165f7a8023340f1af6d1a9faf687f961c0b098c71088c9bd508e8b5",
+    "freezeTransaction": "0xf78f6bb3670eac8b5f48f74d376efa194d2791720d0ade74b0db7505b8366d52",
+    "assessmentTransaction": "0x120ecd3d1e95d9296b812ad02699463860bc7dc9e348c495222e53e5b3c931c6",
+    "authorizationTransaction": "0x8f517b2cdfef1048a75e6a6f6204f7a008c172ac81a1486d884c08afb63eb9b4",
+    "releaseTransaction": "0x33c3cc863906e47c0603fb95f57d450adbad25a1611048898fc6211ba4aaa6cb",
+    "snapshotDigest": "9c0446f2c701db4ad05ae920aa31c92a1197cbde3e747633bcf9feef934475a5",
+    "artifactSha256": "a7e00e32518aa624afb17963445c51056993d76653121025dc176d091223a6d8",
+    "finalState": "RELEASED",
+    "overall": "ALIGNED"
   }
 }
